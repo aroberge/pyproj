@@ -48,6 +48,7 @@ while True:
         break
     elif guess == -1:
         print("Sorry to see you leave; the number was {}.".format(number))
+        break
     elif guess < number:
         print("Your guess is too low.")
     elif guess > number:
