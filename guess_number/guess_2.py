@@ -23,7 +23,7 @@ import random
 # two different places - if we decide to make the game more difficult.
 max_nb = 100
 number = random.randint(1, max_nb)
-prompt = "Guess a number, between 1 and {}, or enter -1 to quit.".format(max_nb)
+prompt = "Guess a number, between 1 and {}, or enter -1 to quit:".format(max_nb)
 
 
 def safe_input():
@@ -45,6 +45,7 @@ while True:
     if guess == number:
         print("Congratulations, you guessed correctly.")
         print("You only needed {} attempts.".format(nb_attempts))
+        break
     elif guess == -1:
         print("Sorry to see you leave; the number was {}.".format(number))
     elif guess < number:
