@@ -5,6 +5,8 @@ and ask the user to guess that number.
 
 Keep track of the user's number of guesses required to guess the correct value.
 
+Provide feedback to the user indicating if their guess is too low or too high.
+
 Make sure that incorrect input by the user (for exemple: entering a word
 instead of number) are taken care of with appropriate feedback
 given to the user.
@@ -45,3 +47,7 @@ while True:
         print("You only needed {} attempts.".format(nb_attempts))
     elif guess == -1:
         print("Sorry to see you leave; the number was {}.".format(number))
+    elif guess < number:
+        print("Your guess is too low.")
+    elif guess > number:
+        print("Your guess is too high.")
