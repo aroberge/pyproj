@@ -9,7 +9,11 @@ Then tell the user if they guessed right or not, and exit the program.
 import random
 
 number = random.randint(1, 10)
+
+# Note: a non-number input could result in an exception being raised
+# in the following line of code.
 guess = int(input("Guess a number, between 1 and 10: "))
+
 if guess == number:
     print("Congratulations, you guessed correctly.")
 else:
