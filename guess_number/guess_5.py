@@ -63,9 +63,9 @@ def save_data(nb_games, nb_guesses, data_exists):
     cursor = db.cursor()
     if data_exists:
         cursor.execute('''UPDATE stats SET nb_games = ? WHERE name = ?
-            ''', ("player", nb_games))
+            ''', (nb_games, "player"))
         cursor.execute('''UPDATE stats SET nb_guesses = ? WHERE name = ?
-            ''', ("player", nb_guesses))
+            ''', (nb_guesses, "player"))
     else:
         cursor.execute('''INSERT INTO stats(name, nb_games, nb_guesses)
             VALUES(:name, :nb_games, :nb_guesses)''',
