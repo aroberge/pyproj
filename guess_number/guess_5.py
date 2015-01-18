@@ -14,36 +14,14 @@ prompt = "Guess a number, between 1 and {}, or enter -1 to quit:".format(max_nb)
 db_file_name = "guessing_game.db"
 
 
-def create_db():
-    '''Creates a database file with the required basic structure'''
-    try:
-        db = sqlite3.connect(db_file_name)
-        cursor = db.cursor()
-        cursor.execute(
-            '''CREATE TABLE IF NOT EXISTS
-            stats(name TEXT, nb_games INTEGER, nb_guesses INTEGER)
-            ''')
-        db.commit()
-    except Exception as e:  # I am not experienced enough with databases
-                            # to know what type of problem could occur here -
-                            # hence the general catch all exception.
-        db.rollback()
-        raise e
-    finally:
-        db.close()
-
-
-def retrieve_data():
+def retrieve_data(db):
     '''retrieves nb_games and nb_guesses from default player
        if it exists, otherwise returns 0 for both values.  In addition,
        returns boolean indicating whether or not the data existed.
     '''
-    create_db()
-    db = sqlite3.connect(db_file_name)
     cursor = db.cursor()
     cursor.execute('''SELECT name, nb_games, nb_guesses FROM stats''')
     stats = cursor.fetchone()  # retrieve the first row
-    db.close()
     if stats is None:
         print("\n    This is your first game! \n")
         return 0, 0, False
@@ -54,11 +32,10 @@ def retrieve_data():
         return stats[1], stats[2], True
 
 
-def save_data(nb_games, nb_guesses, data_exists):
+def save_data(db, nb_games, nb_guesses, data_exists):
     '''saves the relevant data, updating the database if the
        information was already present, inserting it otherwise
     '''
-    db = sqlite3.connect(db_file_name)
     cursor = db.cursor()
     if data_exists:
         cursor.execute('''UPDATE stats SET nb_games = ? WHERE name = ?
@@ -70,7 +47,6 @@ def save_data(nb_games, nb_guesses, data_exists):
             VALUES(:name, :nb_games, :nb_guesses)''',
             {'name': "player", 'nb_games': nb_games, 'nb_guesses': nb_guesses})
     db.commit()
-    db.close()
 
 
 def safe_input():
@@ -109,26 +85,22 @@ def game():
             print("    Your guess is too high.\n")
 
 
-def goodbye(nb_games, total_attempts, data_exists):
-    '''provide feedback to player included average number of attempts
-       required if at least one game was played and, if the statistics
-       were updated, saves the new values.
-    '''
-    if nb_games != 0:
-        print("You have guessed {} numbers in {} attempts.".format(
-              nb_games, total_attempts))
-        print("The average number of guesses per game was {}.".format(
-              total_attempts/nb_games))
-        save_data(nb_games, total_attempts, data_exists)
-    print("Goodbye and thanks for playing")
-
-
-def play_games():
+def play_games(nb_games, total_attempts, data_exists):
     '''play multiple games, keeping track of the total number of games played
        and the total number of attempts made to guess a number
     '''
+    def goodbye():
+        '''provide feedback to player included average number of attempts
+           required if at least one game was played and, if the statistics
+           were updated, saves the new values.
+        '''
+        if nb_games != 0:
+            print("You have guessed {} numbers in {} attempts.".format(
+                  nb_games, total_attempts))
+            print("The average number of guesses per game was {}.".format(
+                  total_attempts/nb_games))   
+        print("Goodbye and thanks for playing")
 
-    nb_games, total_attempts, data_exists = retrieve_data()
     if nb_games == 0:
         print("Welcome to the Guessing Game!\n")
     else:
@@ -145,8 +117,27 @@ def play_games():
         else:
             break
 
-    goodbye(nb_games, total_attempts, data_exists)
+    goodbye()
+    return nb_games, total_attempts, data_exists
 
+
+def main():
+    with sqlite3.connect(db_file_name) as db:
+        cursor = db.cursor()
+        try:
+            cursor.execute(
+                '''CREATE TABLE IF NOT EXISTS
+                stats(name TEXT, nb_games INTEGER, nb_guesses INTEGER)
+                ''')
+        except Exception:
+            db.rollback()
+            raise
+        else:
+            db.commit()
+
+        data_in = retrieve_data(db)
+        data_out = play_games(*data_in)
+        save_data(db, *data_out)
 
 if __name__ == '__main__':
-    play_games()
+    main()
