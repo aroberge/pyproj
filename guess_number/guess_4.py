@@ -6,7 +6,6 @@ in the user's home directory.
 
 The file should be updated each time this program is executed.
 
-You may find os.path.expanduser("~") useful.
 '''
 
 import random
@@ -15,14 +14,13 @@ import os
 max_nb = 100
 prompt = "Guess a number, between 1 and {}, or enter -1 to quit:".format(max_nb)
 file_name = "guessing_game.stats"
-file_path = os.path.join(os.path.expanduser("~"), file_name)
 
 
 def init():
     '''retrieve information from file if it exists'''
 
-    if os.path.exists(file_path):
-        with open(file_path, 'r') as f:
+    if os.path.exists(file_name):
+        with open(file_name, 'r') as f:
             info = f.readline().split()
     else:
         return 0, 0
@@ -77,7 +75,7 @@ def goodbye(nb_games, total_attempts):
               nb_games, total_attempts))
         print("The average number of guesses per game was {}.".format(
               total_attempts/nb_games))
-        with open(file_path, 'w') as f:
+        with open(file_name, 'w') as f:
             f.write("{} {}".format(nb_games, total_attempts))
     print("Goodbye and thanks for playing")
 
