@@ -1,8 +1,7 @@
 ''' Guess the number
 
 Building on the previous version, save the results (number of games and
-total number of guesses) in a database file named "guessing_game.db"
-in the user's home directory.
+total number of guesses) in a database file named "guessing_game.db".
 
 The file should be updated each time this program is executed.
 '''
