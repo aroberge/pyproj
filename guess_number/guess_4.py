@@ -2,7 +2,6 @@
 
 Building on the previous version, save the results (number of games and
 total number of guesses) in a file named "guessing_game.stats"
-in the user's home directory.
 
 The file should be updated each time this program is executed.
 
