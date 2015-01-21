@@ -38,12 +38,14 @@ import random
 
 
 class Guesser:
+    '''Guesses an integer using a binary strategy'''
     def __init__(self):
         self.low = 1
         self.high = 100
         self.answer = (self.low + self.high)//2
 
     def guess(self, action):
+        '''The method used to guess number, following some received feedback'''
         if action == "start":
             print("I am guessing {}".format(self.answer))
             return self.answer
@@ -61,10 +63,13 @@ class Guesser:
 
 
 class Chooser:
+    '''Chooses an integer randomly and give feedback based on the number
+       received'''
     def __init__(self):
         self.number = random.randint(1, 100)
 
     def analyze(self, guess):
+        '''Method used to give feedback'''
         if guess == self.number:
             print("    You are correct!")
             return "correct"
