@@ -1,6 +1,6 @@
 '''Simple ajax demo using flask'''
 
-from flask import Flask, request, jsonify
+from flask import Flask, request
 
 app = Flask(__name__)
 
@@ -10,11 +10,9 @@ def index():
     return html_content  # see below
 
 
-@app.route('/_add_numbers')
-def add_numbers():
-    a = request.args.get('a', 0, type=int)
-    b = request.args.get('b', 0, type=int)
-    return jsonify(result=a + b)
+@app.route('/_double')
+def double_number():
+    return str(request.args.get('number', 0, type=int)*2)
 
 
 # For simplicity, we'll use jQuery
@@ -26,30 +24,28 @@ html_content = '''
     <script type=text/javascript>
       $(function() {
         $('#calculate').bind('click', function() {
-          $.getJSON('/_add_numbers', {
-            a: $('input[name="a"]').val(),
-            b: $('input[name="b"]').val()
-          }, function(data) {
-            $("#result").text(data.result);
-          });
+            $.ajax({url:'/_double',
+                      data:"number="+$('input[name="a"]').val()
+                   }).done(
+                        function(data) { $("#result").text(data);
+                         });
           return false;
         });
       });
     </script>
   </head>
   <body>
-    <h1>Adding two number using ajax</h1>
+    <h1>Double a number using ajax</h1>
 
     <form>
-      <input type="text" size="5" name="a"> +
-      <input type="text" size="5" name="b"> =
+      <input type="text" size="5" name="a">
+      <button id="calculate">Calculate double:</button>
       <span id="result">?</span>
     </form>
-    <p><button id="calculate">Calculate</button></p>
 
   </body>
 </html>
 '''
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
