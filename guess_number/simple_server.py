@@ -1,6 +1,5 @@
 """
 Serves files out of its current directory
-Dosen't handle POST request
 """
 
 import threading
