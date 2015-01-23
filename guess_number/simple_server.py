@@ -1,5 +1,5 @@
 """
-Serves files out of its current directory
+Serves files out of its current directory with ajax test
 """
 
 import threading
@@ -10,6 +10,7 @@ from urllib.parse import urlsplit
 
 
 def double(n=0):
+    '''simple test function'''
     return str(2 * n)
 
 
@@ -21,7 +22,7 @@ class CustomHandler(SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(bytes(text, encoding="utf-8"))
 
-    def do_GET(self):
+    def do_GET(self):  # noqa
 
         if self.path.startswith('/ajax_double'):
             query = urlsplit(self.path).query
@@ -33,11 +34,20 @@ class CustomHandler(SimpleHTTPRequestHandler):
             self.send_page(double(number))
 
         elif self.path == '/quit':
-            self.send_page("<h1>Server shutting down.</h1>")
-            assassin = threading.Thread(target=server.shutdown)
+            self.send_page("<h3>Server shutting down.</h3>")
+            # ... from Python's REPL
+            # >>> help(socketserver.BaseServer.shutdown)
+            # Help on function shutdown in module socketserver:
+
+            # shutdown(self)
+            #     Stops the serve_forever loop.
+
+            #     Blocks until the loop has finished. This must be called while
+            #     serve_forever() is running in another thread, or it will
+            #     deadlock.
+            shut_it_down = threading.Thread(target=server.shutdown, daemon=True)
             print("Server shutting down.")
-            assassin.daemon = True
-            assassin.start()
+            shut_it_down.start()
         else:
             # serve files, and directory listings by following self.path from
             # current working directory, opening index.html by default if
