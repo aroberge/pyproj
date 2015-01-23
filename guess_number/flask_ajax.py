@@ -1,5 +1,6 @@
 '''Simple ajax demo using flask'''
 
+import webbrowser
 from flask import Flask, request
 
 
@@ -12,6 +13,20 @@ with open("index.html", 'r') as f:
 # ----  flask related stuff follows----------------
 
 app = Flask(__name__)
+
+
+def shutdown_server():
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+
+
+@app.route('/quit')
+def shutdown():
+    func = request.environ.get('werkzeug.server.shutdown')
+    func()
+    return '<h3>Server shutting down...</h3>'
 
 
 @app.route('/')
@@ -34,4 +49,5 @@ def double_number():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    webbrowser.open("http://localhost:5000/")  # default for Flask
+    app.run()
