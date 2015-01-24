@@ -27,7 +27,7 @@ def choose_cave():
        Return the chosen value as a string'''
     cave = ''
     while cave not in ('1', '2'):
-        cave = input('Which cave will you go into? (1 or 2)')
+        cave = input('Which cave will you go into? (1 or 2)\n')
 
     return cave
 
@@ -57,4 +57,4 @@ while play_again in ('yes', 'y'):
     cave_number = choose_cave()
     check_cave(cave_number)
 
-    play_again = input('\nDo you want to play again? (yes or no)')
+    play_again = input('\nDo you want to play again? (yes or no)\n')
